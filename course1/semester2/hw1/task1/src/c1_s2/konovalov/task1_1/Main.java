@@ -7,6 +7,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         int command = -1;
         Stack numbers = new Stack();
+
         printCommands();
         while (command != 0) {
             System.out.print("Enter command: ");
