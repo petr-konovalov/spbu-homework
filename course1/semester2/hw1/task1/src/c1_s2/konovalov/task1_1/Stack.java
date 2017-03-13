@@ -2,14 +2,10 @@ package c1_s2.konovalov.task1_1;
 
 public class Stack {
     public void push(int value) {
-        if (isEmpty()) {
-            head = new Node();
-            head.value = value;
-            head.next = null;
-        } else {
-            Node newNode = new Node();
-            newNode.value = value;
-            newNode.next = head;
+        if (isEmpty())
+            head = new Node(value, null);
+        else {
+            Node newNode = new Node(value, head);
             head = newNode;
         }
     }
@@ -25,6 +21,11 @@ public class Stack {
     }
 
     private class Node {
+        public Node(int initalValue, Node initalNext) {
+            value = initalValue;
+            next = initalNext;
+        }
+
         private int value;
         private Node next;
     }
