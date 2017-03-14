@@ -1,14 +1,8 @@
 package c1_s2.konovalov.task1_2;
 
 public class List {
-    public void List() {
-        head = null;
-    }
-
     public void insertElementTop(int value) {
-        ListElement newElement = new ListElement();
-        newElement.setNextElement(head);
-        newElement.setValue(value);
+        ListElement newElement = new ListElement(value, head);
         head = newElement;
     }
 
@@ -22,29 +16,28 @@ public class List {
         if (previousElement == null)
             return false;
 
-        ListElement newElement = new ListElement();
-        newElement.setValue(value);
-        newElement.setNextElement(previousElement.getNextElement());
-        previousElement.setNextElement(newElement);
+        ListElement newElement = new ListElement(value, previousElement.nextElement);
+        previousElement.nextElement = newElement;
         return true;
     }
 
-    public void deleteTopElement() {
-        head = head.getNextElement();
+    public boolean deleteTopElement() {
+        if (isEmpty())
+            return false;
+        head = head.nextElement;
+        return true;
     }
 
     public boolean deleteElement(int position) {
-        if (position == 0) {
-            deleteTopElement();
-            return true;
-        }
+        if (position == 0)
+            return deleteTopElement();
 
         ListElement previousElement = getPreviousElement(position);
-        if (previousElement.getNextElement() == null)
+        if (previousElement.nextElement == null)
             return false;
 
-        ListElement deletingElement = previousElement.getNextElement();
-        previousElement.setNextElement(deletingElement.getNextElement());
+        ListElement deletingElement = previousElement.nextElement;
+        previousElement.nextElement = deletingElement.nextElement;
         return true;
     }
 
@@ -52,8 +45,8 @@ public class List {
         ListElement currentElement = head;
         int position = 0;
 
-        while (currentElement != null && currentElement.getValue() != value) {
-            currentElement = currentElement.getNextElement();
+        while (currentElement != null && currentElement.value != value) {
+            currentElement = currentElement.nextElement;
             ++position;
         }
 
@@ -67,32 +60,40 @@ public class List {
         ListElement currentElement = head;
 
         while (position > 0 && currentElement != null) {
-            currentElement = currentElement.getNextElement();
+            currentElement = currentElement.nextElement;
             --position;
         }
 
         if (currentElement == null)
             return 0;
         else
-            return currentElement.getValue();
+            return currentElement.value;
     }
 
-    public void printList() {
-        ListElement currentElement = head;
+    public int getFirstElement() {
+        currentElement = head.nextElement;
+        return head.value;
+    }
 
-        while (currentElement != null) {
-            System.out.print(currentElement.getValue() + " ");
-            currentElement = currentElement.getNextElement();
-        }
+    public int getNextElement() {
+        int nextValue = currentElement.value;
+        currentElement = currentElement.nextElement;
+        return nextValue;
+    }
 
-        System.out.println();
+    public boolean hasReachedLastElement() {
+        return currentElement == null;
+    }
+
+    public boolean isEmpty() {
+        return head == null;
     }
 
     private ListElement getPreviousElement(int position) {
         ListElement previousElement = head;
 
         while (position > 1 && previousElement != null) {
-            previousElement = previousElement.getNextElement();
+            previousElement = previousElement.nextElement;
             --position;
         }
 
@@ -100,25 +101,15 @@ public class List {
     }
 
     private class ListElement {
-        public int getValue() {
-           return value;
-        }
-
-        public void setValue(int newValue) {
-            value = newValue;
-        }
-
-        public ListElement getNextElement() {
-            return nextElement;
-        }
-
-        public void setNextElement(ListElement newNextElement) {
-            nextElement = newNextElement;
+        public ListElement(int initialValue, ListElement initialNextElement) {
+            value = initialValue;
+            nextElement = initialNextElement;
         }
 
         private int value;
         private ListElement nextElement;
     }
 
-    private ListElement head;
+    private ListElement head = null;
+    private ListElement currentElement = null;
 }
