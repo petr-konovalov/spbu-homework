@@ -76,8 +76,12 @@ public class Main {
         System.out.print("enter position: ");
         int position = input.nextInt();
 
-        int value = numbers.retrieveElement(position);
-        System.out.println("value: " + value);
+        BooleanLink result = new BooleanLink();
+        int value = numbers.retrieveElement(position, result);
+        if (result.getValue())
+            System.out.println("value: " + value);
+        else
+            System.out.println("error: element was not retrieved");
     }
 
     private static void executeCommandPrintList(List numbers) {

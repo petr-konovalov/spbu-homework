@@ -33,7 +33,7 @@ public class List {
             return deleteTopElement();
 
         ListElement previousElement = getPreviousElement(position);
-        if (previousElement.nextElement == null)
+        if (previousElement == null || previousElement.nextElement == null)
             return false;
 
         ListElement deletingElement = previousElement.nextElement;
@@ -56,7 +56,7 @@ public class List {
             return position;
     }
 
-    public int retrieveElement(int position) {
+    public int retrieveElement(int position, BooleanLink result) {
         ListElement currentElement = head;
 
         while (position > 0 && currentElement != null) {
@@ -64,10 +64,13 @@ public class List {
             --position;
         }
 
-        if (currentElement == null)
-            return 0;
-        else
+        if (currentElement != null) {
+            result.setValue(true);
             return currentElement.value;
+        } else {
+            result.setValue(false);
+            return 0;
+        }
     }
 
     public int getFirstElement() {
