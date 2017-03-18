@@ -1,9 +1,11 @@
 package c1_s2.konovalov.task1_2;
 
 public class List {
+    private ListElement head = null;
+    private ListElement currentElement = null;
+
     public void insertElementTop(int value) {
-        ListElement newElement = new ListElement(value, head);
-        head = newElement;
+        head = new ListElement(value, head);
     }
 
     public boolean insertElement(int value, int position) {
@@ -16,8 +18,7 @@ public class List {
         if (previousElement == null)
             return false;
 
-        ListElement newElement = new ListElement(value, previousElement.nextElement);
-        previousElement.nextElement = newElement;
+        previousElement.nextElement = new ListElement(value, previousElement.nextElement);
         return true;
     }
 
@@ -36,8 +37,7 @@ public class List {
         if (previousElement == null || previousElement.nextElement == null)
             return false;
 
-        ListElement deletingElement = previousElement.nextElement;
-        previousElement.nextElement = deletingElement.nextElement;
+        previousElement.nextElement = previousElement.nextElement.nextElement;
         return true;
     }
 
@@ -56,7 +56,7 @@ public class List {
             return position;
     }
 
-    public int retrieveElement(int position, BooleanLink result) {
+    public Integer retrieveElement(int position) {
         ListElement currentElement = head;
 
         while (position > 0 && currentElement != null) {
@@ -64,13 +64,10 @@ public class List {
             --position;
         }
 
-        if (currentElement != null) {
-            result.setValue(true);
+        if (currentElement != null)
             return currentElement.value;
-        } else {
-            result.setValue(false);
-            return 0;
-        }
+        else
+            return null;
     }
 
     public int getFirstElement() {
@@ -104,15 +101,12 @@ public class List {
     }
 
     private class ListElement {
+        private int value;
+        private ListElement nextElement;
+
         public ListElement(int initialValue, ListElement initialNextElement) {
             value = initialValue;
             nextElement = initialNextElement;
         }
-
-        private int value;
-        private ListElement nextElement;
     }
-
-    private ListElement head = null;
-    private ListElement currentElement = null;
 }

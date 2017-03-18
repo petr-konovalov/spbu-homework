@@ -76,9 +76,8 @@ public class Main {
         System.out.print("enter position: ");
         int position = input.nextInt();
 
-        BooleanLink result = new BooleanLink();
-        int value = numbers.retrieveElement(position, result);
-        if (result.getValue())
+        Integer value = numbers.retrieveElement(position);
+        if (value != null)
             System.out.println("value: " + value);
         else
             System.out.println("error: element was not retrieved");
