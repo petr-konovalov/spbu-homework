@@ -11,7 +11,8 @@ public class LinkedStack<T> implements Stack<T> {
     @Override
     public T pop() throws StackIsEmptyException {
         if (isEmpty())
-            throw new StackIsEmptyException("error: stack is empty");
+            throw new StackIsEmptyException("error: stack is empty, method pop can not be evoked");
+
         T value = head.value;
         head = head.next;
         return value;
@@ -20,8 +21,14 @@ public class LinkedStack<T> implements Stack<T> {
     @Override
     public T top() throws StackIsEmptyException {
         if (isEmpty())
-            throw new StackIsEmptyException("error: stack is empty");
+            throw new StackIsEmptyException("error: stack is empty, method top can not be evoked");
+
         return head.value;
+    }
+
+    @Override
+    public void clear() {
+        head = null;
     }
 
     @Override
