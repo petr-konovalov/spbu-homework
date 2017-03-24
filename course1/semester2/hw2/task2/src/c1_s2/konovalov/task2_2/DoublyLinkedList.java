@@ -19,12 +19,15 @@ public class DoublyLinkedList<T> implements List<T> {
     @Override
     public T getNext() throws ListIsEmptyException {
         if (isEmpty())
-            throw new ListIsEmptyException("doubly linked list is empty");
+            throw new ListIsEmptyException();
 
         if (!hasNext())
             current = head;
         else
             current = current.next;
+
+        if (current == null)
+            return null;
 
         return current.value;
     }
@@ -32,12 +35,15 @@ public class DoublyLinkedList<T> implements List<T> {
     @Override
     public T getPrevious() throws ListIsEmptyException {
         if (isEmpty())
-            throw new ListIsEmptyException("doubly linked list is empty");
+            throw new ListIsEmptyException();
 
         if (!hasPrevious())
             current = getEnd();
         else
             current = current.previous;
+
+        if (current == null)
+            return null;
 
         return current.value;
     }
@@ -45,7 +51,7 @@ public class DoublyLinkedList<T> implements List<T> {
     @Override
     public T getFirst() throws ListIsEmptyException {
         if (isEmpty())
-            throw new ListIsEmptyException("doubly linked list is empty");
+            throw new ListIsEmptyException();
 
         current = head;
         return current.value;
@@ -58,36 +64,92 @@ public class DoublyLinkedList<T> implements List<T> {
 
     @Override
     public boolean hasNext() {
-        return current != null && current.next != null;
+        return current != null;
     }
 
     @Override
     public boolean hasPrevious() {
-        return current != null && current.previous != null;
+        return current != null;
     }
 
     @Override
     public void insert(int position, T element) throws ListOutOfBoundException {
-        if (position == 0)
-            head = new Node(element, head, null);
+        if (position == 0) {
+            if (head == null)
+                head = new Node(element, head, null);
+            else {
+                head.previous = new Node(element, head, null);
+                head = head.previous;
+            }
+        }
+        else {
+            Node previousElement = getPreviousElement(position);
 
-        Node currentElement = getElement(position);
-        if (currentElement == null)
-            throw new ListOutOfBoundException("out of the doubly linked list");
+            if (previousElement == null)
+                throw new ListOutOfBoundException();
 
-        currentElement.previous.next = new Node(element, currentElement.next, currentElement.previous);
+            previousElement.next = new Node(element, previousElement.next, previousElement);
+            if (previousElement.next.next != null)
+                previousElement.next.next.previous = previousElement.next;
+        }
     }
 
     @Override
     public void remove(int position) throws ListOutOfBoundException {
-        if (position == 0)
+        if (position == 0) {
             head = head.next;
+            if (head != null)
+                head.previous = null;
+        }
+        else {
+            Node previousElement = getPreviousElement(position);
 
-        Node currentElement = getElement(position);
-        if (currentElement == null)
-            throw new ListOutOfBoundException("out of the doubly linked list");
+            if (previousElement == null || previousElement.next == null)
+                throw new ListOutOfBoundException();
 
-        currentElement.previous.next = currentElement.next;
+            previousElement.next = previousElement.next.next;
+            if (previousElement.next != null)
+                previousElement.next.previous = previousElement;
+        }
+    }
+
+    @Override
+    public void insertCurrentPosition(T element) {
+        if (hasPrevious() && current != head)
+        {
+            current.previous = new Node(element, current, current.previous);
+            if (current.previous.previous != null)
+                current.previous.previous.next = current.previous;
+            current = current.previous;
+        }
+        else {
+            if (head == null)
+                head = new Node(element, head, null);
+            else {
+                head. previous = new Node(element, head, null);
+                head = head.previous;
+            }
+            current = head;
+        }
+    }
+
+    @Override
+    public void removeCurrentPosition() throws ListIsEmptyException {
+        if (hasPrevious() && current != head) {
+            current = current.previous;
+            current.next = current.next.next;
+            if (current.next != null)
+                current.next.previous = current;
+        }
+        else {
+            if (isEmpty())
+                throw new ListIsEmptyException();
+
+            head = head.next;
+            if (head != null)
+                head.previous = null;
+            current = head;
+        }
     }
 
     private Node getEnd() {
@@ -98,10 +160,10 @@ public class DoublyLinkedList<T> implements List<T> {
         return searchNode;
     }
 
-    private Node getElement(int position) {
+    private Node getPreviousElement(int position) {
         Node previousElement = head;
 
-        while (position > 0 && previousElement != null) {
+        while (position > 1 && previousElement != null) {
             previousElement = previousElement.next;
             --position;
         }
