@@ -6,15 +6,25 @@ public class Calculator {
     private int currentNumber = 0;
     private boolean currentNumberPushed = false;
 
-    public void addExpressionSymbol(char symbol) throws Stack.StackIsEmptyException {
-        if (isDigit(symbol))
-            addExpressionDigit(symbol - '0');
-        else if (isSign(symbol))
-            addExpressionOperation(symbol);
-        else if (symbol == '(')
-            addExpressionOpeningBracket();
-        else if (symbol == ')')
-            addExpressionClosingBracket();
+    class SyntaxErrorException extends Exception {
+
+    }
+
+    public void addExpressionSymbol(char symbol) throws SyntaxErrorException {
+        try {
+            if (isDigit(symbol))
+                addExpressionDigit(symbol - '0');
+            else if (isSign(symbol))
+                addExpressionOperation(symbol);
+            else if (symbol == '(')
+                addExpressionOpeningBracket();
+            else if (symbol == ')')
+                addExpressionClosingBracket();
+            else if (symbol != ' ')
+                throw new SyntaxErrorException();
+        } catch(Stack.StackIsEmptyException e) {
+            throw new SyntaxErrorException();
+        }
     }
 
     public void resetExpression() {
@@ -65,8 +75,12 @@ public class Calculator {
         operations.pop();
     }
 
-    public float getResult() throws Stack.StackIsEmptyException {
-        return numbers.top();
+    public float getResult() throws SyntaxErrorException {
+        try {
+            return numbers.top();
+        } catch(Stack.StackIsEmptyException e) {
+            throw new SyntaxErrorException();
+        }
     }
 
     private void executeExpressionTopOperation() throws Stack.StackIsEmptyException {

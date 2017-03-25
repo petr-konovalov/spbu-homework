@@ -1,7 +1,5 @@
 package c1_s2.konovalov.task2_1;
 
-import java.lang.reflect.Array;
-
 public class ArrayStack<T> implements Stack<T> {
     private int head = 0;
     private int size = 32;
@@ -19,7 +17,7 @@ public class ArrayStack<T> implements Stack<T> {
     @Override
     public T pop() throws StackIsEmptyException {
         if (isEmpty())
-            throw new StackIsEmptyException("error: stack is empty, method pop can not be evoked");
+            throw new StackIsEmptyException("method pop can not be evoked");
 
         --head;
         return elements[head];
@@ -28,7 +26,7 @@ public class ArrayStack<T> implements Stack<T> {
     @Override
     public T top() throws StackIsEmptyException {
         if (isEmpty())
-            throw new StackIsEmptyException("error: stack is empty, method top can not be evoked");
+            throw new StackIsEmptyException("method top can not be evoked");
 
         return elements[head - 1];
     }

@@ -35,8 +35,8 @@ public class Main {
 
             System.out.println("result: " + calculator.getResult());
             calculator.resetExpression();
-        } catch (Stack.StackIsEmptyException e) {
-            System.out.println("error: expression can't be calculate\n" + e.getMessage());
+        } catch (Calculator.SyntaxErrorException e) {
+            System.out.println("syntax error, expression can't be calculate");
         }
     }
 }
