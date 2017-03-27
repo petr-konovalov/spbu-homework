@@ -19,7 +19,7 @@ public class LinkedList<T> implements List<T> {
         if (isEmpty())
             throw new ListIsEmptyException();
 
-        if (!hasNext())
+        if (current == null)
             current = head;
         else
             current = current.next;
@@ -31,43 +31,26 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-    public T getPrevious() throws ListIsEmptyException {
-        if (isEmpty())
-            throw new ListIsEmptyException();
+    public int size() {
+        Node runningElement = head;
+        int elementCount = 0;
 
-        Node searchNode = head;
+        while (runningElement != null) {
+            runningElement = runningElement.next;
+            ++elementCount;
+        }
 
-        while (searchNode != null && searchNode.next != current)
-            searchNode = searchNode.next;
-        current = searchNode;
-
-        if (current == null)
-            return null;
-        return searchNode.value;
+        return elementCount;
     }
 
     @Override
-    public T getFirst() throws ListIsEmptyException {
-        if (isEmpty())
-            throw new ListIsEmptyException();
+    public T retrieve(int position) throws ListOutOfBoundException {
+        Node element = getElement(position);
 
-        current = head;
-        return head.value;
-    }
+        if (element == null)
+            throw new ListOutOfBoundException();
 
-    @Override
-    public boolean isEmpty() {
-        return head == null;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return current != null;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return current != null;
+        return element.value;
     }
 
     @Override
@@ -75,7 +58,7 @@ public class LinkedList<T> implements List<T> {
         if (position == 0)
             head = new Node(element, head);
         else {
-            Node previousElement = getPreviousElement(position);
+            Node previousElement = getElement(position - 1);
 
             if (previousElement == null)
                 throw new ListOutOfBoundException();
@@ -86,10 +69,10 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public void remove(int position) throws ListOutOfBoundException {
-        if (position == 0)
+        if (head != null && position == 0)
             head = head.next;
         else {
-            Node previousElement = getPreviousElement(position);
+            Node previousElement = getElement(position - 1);
 
             if (previousElement == null || previousElement.next == null)
                 throw new ListOutOfBoundException();
@@ -98,54 +81,18 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    @Override
-    public void insertCurrentPosition(T element) {
-        if (!hasPrevious() || current == head)
-        {
-            head = new Node(element, head);
-            current = head;
-        } else {
-            Node previousElement = getPreviousElement(current);
-
-            previousElement.next = new Node(element, current);
-            current = previousElement.next;
-        }
+    private boolean isEmpty() {
+        return head == null;
     }
 
-    @Override
-    public void removeCurrentPosition() throws ListIsEmptyException {
-        if (!hasPrevious() || current == head)
-        {
-            head = head.next;
-            current = head;
-        } else {
-            if (isEmpty())
-                throw new ListIsEmptyException();
+    private Node getElement(int position) {
+        Node element = head;
 
-            Node previousElement = getPreviousElement(current);
-
-            current = current.next;
-            previousElement.next = current;
-        }
-    }
-
-    private Node getPreviousElement(int position) {
-        Node previousElement = head;
-
-        while (position > 1 && previousElement != null) {
-            previousElement = previousElement.next;
+        while (position > 0 && element != null) {
+            element = element.next;
             --position;
         }
 
-        return previousElement;
-    }
-
-    private Node getPreviousElement(Node currentElement) {
-        Node previousElement = head;
-
-        while (previousElement.next != currentElement)
-            previousElement = previousElement.next;
-
-        return previousElement;
+        return element;
     }
 }

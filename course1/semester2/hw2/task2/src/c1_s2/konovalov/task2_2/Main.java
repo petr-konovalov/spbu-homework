@@ -51,91 +51,58 @@ public class Main {
         System.out.println(
                 "commands: \n" +
                 "0 - exit\n" +
-                "1 - get next\n" +
-                "2 - get previous\n" +
-                "3 - get first\n" +
-                "4 - insert in current position\n" +
-                "5 - remove from current position\n" +
-                "6 - insert\n" +
-                "7 - remove"
+                "1 - print\n" +
+                "2 - size\n" +
+                "3 - retrieve\n" +
+                "4 - insert\n" +
+                "5 - remove"
         );
     }
 
     private static void executeCommand(List<Integer> numbers, Scanner input, int command) {
         switch (command) {
             case 1:
-                executeCommandGetNext(numbers);
+                executeCommandPrint(numbers);
                 break;
             case 2:
-                executeCommandGetPrevious(numbers);
+                executeCommandSize(numbers);
                 break;
             case 3:
-                executeCommandGetFirst(numbers);
+                executeCommandRetrieve(numbers, input);
                 break;
             case 4:
-                executeCommandInsertCurrentPosition(numbers, input);
-                break;
-            case 5:
-                executeCommandRemoveCurrentPosition(numbers);
-                break;
-            case 6:
                 executeCommandInsert(numbers, input);
                 break;
-            case 7:
+            case 5:
                 executeCommandRemove(numbers, input);
                 break;
-            case 8:
-                executeCommandPrintList(numbers);
-                break;
         }
     }
 
-    private static void executeCommandGetNext(List<Integer> numbers) {
+    private static void executeCommandRetrieve(List<Integer> numbers, Scanner input) {
         try {
-            Integer number = numbers.getNext();
-            if (number == null)
-                number = numbers.getNext();
+            System.out.print("enter position: ");
+            int position = input.nextInt();
 
-            System.out.println("next number: " + number);
-        } catch(List.ListIsEmptyException e) {
-            System.out.println("list is empty");
+            Integer number = numbers.retrieve(position);
+            System.out.println("retrieved number: " + number);
+        } catch(List.ListOutOfBoundException e) {
+            System.out.println("out of the list, number was not be retrieved");
         }
     }
 
-    private static void executeCommandGetPrevious(List<Integer> numbers) {
-        try {
-            Integer number = numbers.getPrevious();
-            if (number == null)
-                number = numbers.getPrevious();
-
-            System.out.println("previous number: " + number);
-        } catch(List.ListIsEmptyException e) {
-            System.out.println("list is empty");
-        }
+    private static void executeCommandSize(List<Integer> numbers) {
+        System.out.println("list size: " + numbers.size());
     }
 
-    private static void executeCommandGetFirst(List<Integer> numbers) {
+    private static void executeCommandPrint(List<Integer> numbers) {
         try {
-            System.out.println("first element: " + numbers.getFirst());
-        } catch(List.ListIsEmptyException e) {
-            System.out.println("list is empty");
-        }
-    }
-
-    private static void executeCommandInsertCurrentPosition(List<Integer> numbers, Scanner input) {
-        System.out.print("enter number: ");
-        Integer element = input.nextInt();
-
-        numbers.insertCurrentPosition(element);
-        System.out.println("element added");
-    }
-
-    private static void executeCommandRemoveCurrentPosition(List<Integer> numbers) {
-        try {
-            numbers.removeCurrentPosition();
-            System.out.println("element removed");
-        } catch(List.ListIsEmptyException e) {
-            System.out.println("list is empty");
+            System.out.print("list: ");
+            for (Integer number = numbers.getNext(); number != null; number = numbers.getNext())
+                System.out.print(number + " ");
+            System.out.println();
+        } catch (List.ListIsEmptyException e) {
+            System.out.println("is empty");
         }
     }
 
@@ -149,7 +116,7 @@ public class Main {
             numbers.insert(position, element);
             System.out.println("number added");
         } catch(List.ListOutOfBoundException e) {
-            System.out.println("out of the list");
+            System.out.println("out of the list, number was not be added");
         }
     }
 
@@ -161,22 +128,7 @@ public class Main {
             numbers.remove(position);
             System.out.println("number removed");
         } catch(List.ListOutOfBoundException e) {
-            System.out.println("out of the list");
-        }
-    }
-
-    private static void executeCommandPrintList(List<Integer> numbers) {
-        if (numbers.isEmpty())
-            System.out.println("list is empty");
-        else {
-            System.out.print("list: ");
-            try {
-                for (Integer number = numbers.getFirst(); numbers.hasNext(); number = numbers.getNext())
-                    System.out.print(number + " ");
-            } catch (List.ListIsEmptyException e) {
-
-            }
-            System.out.println();
+            System.out.println("out of the list, number was not be removed");
         }
     }
 }

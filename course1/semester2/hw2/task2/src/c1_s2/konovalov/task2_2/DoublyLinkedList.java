@@ -9,7 +9,7 @@ public class DoublyLinkedList<T> implements List<T> {
         private Node next;
         private Node previous;
 
-        public Node(T initialValue, Node initialNext, Node initialPrevious) {
+        private Node(T initialValue, Node initialNext, Node initialPrevious) {
             value = initialValue;
             next = initialNext;
             previous = initialPrevious;
@@ -21,7 +21,7 @@ public class DoublyLinkedList<T> implements List<T> {
         if (isEmpty())
             throw new ListIsEmptyException();
 
-        if (!hasNext())
+        if (current == null)
             current = head;
         else
             current = current.next;
@@ -33,57 +33,40 @@ public class DoublyLinkedList<T> implements List<T> {
     }
 
     @Override
-    public T getPrevious() throws ListIsEmptyException {
-        if (isEmpty())
-            throw new ListIsEmptyException();
+    public int size() {
+        Node runningElement = head;
+        int elementCount = 0;
 
-        if (!hasPrevious())
-            current = getEnd();
-        else
-            current = current.previous;
+        while (runningElement != null) {
+            runningElement = runningElement.next;
+            ++elementCount;
+        }
 
-        if (current == null)
-            return null;
-
-        return current.value;
+        return elementCount;
     }
 
     @Override
-    public T getFirst() throws ListIsEmptyException {
-        if (isEmpty())
-            throw new ListIsEmptyException();
+    public T retrieve(int position) throws ListOutOfBoundException {
+        Node element = getElement(position);
 
-        current = head;
-        return current.value;
-    }
+        if (element == null)
+            throw new ListOutOfBoundException();
 
-    @Override
-    public boolean isEmpty() {
-        return head == null;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return current != null;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return current != null;
+        return element.value;
     }
 
     @Override
     public void insert(int position, T element) throws ListOutOfBoundException {
         if (position == 0) {
             if (head == null)
-                head = new Node(element, head, null);
+                head = new Node(element, null, null);
             else {
                 head.previous = new Node(element, head, null);
                 head = head.previous;
             }
         }
         else {
-            Node previousElement = getPreviousElement(position);
+            Node previousElement = getElement(position - 1);
 
             if (previousElement == null)
                 throw new ListOutOfBoundException();
@@ -96,13 +79,13 @@ public class DoublyLinkedList<T> implements List<T> {
 
     @Override
     public void remove(int position) throws ListOutOfBoundException {
-        if (position == 0) {
+        if (head != null && position == 0) {
             head = head.next;
             if (head != null)
                 head.previous = null;
         }
         else {
-            Node previousElement = getPreviousElement(position);
+            Node previousElement = getElement(position - 1);
 
             if (previousElement == null || previousElement.next == null)
                 throw new ListOutOfBoundException();
@@ -113,61 +96,18 @@ public class DoublyLinkedList<T> implements List<T> {
         }
     }
 
-    @Override
-    public void insertCurrentPosition(T element) {
-        if (hasPrevious() && current != head)
-        {
-            current.previous = new Node(element, current, current.previous);
-            if (current.previous.previous != null)
-                current.previous.previous.next = current.previous;
-            current = current.previous;
-        }
-        else {
-            if (head == null)
-                head = new Node(element, head, null);
-            else {
-                head. previous = new Node(element, head, null);
-                head = head.previous;
-            }
-            current = head;
-        }
+    private boolean isEmpty() {
+        return head == null;
     }
 
-    @Override
-    public void removeCurrentPosition() throws ListIsEmptyException {
-        if (hasPrevious() && current != head) {
-            current = current.previous;
-            current.next = current.next.next;
-            if (current.next != null)
-                current.next.previous = current;
-        }
-        else {
-            if (isEmpty())
-                throw new ListIsEmptyException();
+    private Node getElement(int position) {
+        Node element = head;
 
-            head = head.next;
-            if (head != null)
-                head.previous = null;
-            current = head;
-        }
-    }
-
-    private Node getEnd() {
-        Node searchNode = head;
-        while (searchNode.next != null)
-            searchNode = searchNode.next;
-
-        return searchNode;
-    }
-
-    private Node getPreviousElement(int position) {
-        Node previousElement = head;
-
-        while (position > 1 && previousElement != null) {
-            previousElement = previousElement.next;
+        while (position > 0 && element != null) {
+            element = element.next;
             --position;
         }
 
-        return previousElement;
+        return element;
     }
 }
