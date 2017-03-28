@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Assert;
 import java.util.Random;
 
-public class sorterTest {
+public class SorterTest {
     private Random generator;
 
     @Before
