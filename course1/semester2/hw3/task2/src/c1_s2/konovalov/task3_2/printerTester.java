@@ -4,7 +4,7 @@ import org.junit.Test;
 import java.util.Random;
 import static junit.framework.TestCase.fail;
 
-public class printerTester {
+public class PrinterTester {
     @Test
     public void testConsolePrinter() {
         Printer printer = new ConsolePrinter();

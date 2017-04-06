@@ -8,7 +8,6 @@ public class Main {
         Scanner input = new Scanner(System.in);
         Printer printer = getPrinter(input);
 
-
         if (printer != null) {
             System.out.println("printer was created");
             printCommand();
