@@ -1,6 +1,7 @@
 package c1_s2.konovalov.task3_1;
 
 public class QuickSorter<T extends Comparable<T>> implements Sorter<T> {
+    private ArraySwapper<T> swapper = new ArraySwapper<T>();
     @Override
     public void sort(T[] array) {
         sort(array, 0, array.length - 1);
@@ -17,7 +18,7 @@ public class QuickSorter<T extends Comparable<T>> implements Sorter<T> {
             while (middleElement.compareTo(array[j]) < 0)
                 --j;
             if (i <= j) {
-                swap(array, i, j);
+                swapper.swap(array, i, j);
                 ++i;
                 --j;
             }
@@ -27,11 +28,5 @@ public class QuickSorter<T extends Comparable<T>> implements Sorter<T> {
             sort(array, i, rightBound);
         if (j > leftBound)
             sort(array, leftBound, j);
-    }
-
-    private void swap(T[] array, int firstElement, int secondElement) {
-        T temporaryElement = array[firstElement];
-        array[firstElement] = array[secondElement];
-        array[secondElement] = temporaryElement;
     }
 }
