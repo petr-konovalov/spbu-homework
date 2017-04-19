@@ -57,7 +57,7 @@ public class Main {
             table.add(key, value);
             System.out.println("Element added");
         } catch (HashTable.ReAddKeyException e) {
-            System.out.println("Sorry key already added");
+            System.out.println("Sorry " + e.getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ public class Main {
             table.delete(key);
             System.out.println("Element deleted");
         } catch (HashTable.KeyNotFoundException e) {
-            System.out.println("Sorry key not found");
+            System.out.println("Sorry " + e.getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ public class Main {
             String value = table.get(key);
             System.out.println("Value: " + value);
         } catch (HashTable.KeyNotFoundException e) {
-            System.out.println("Sorry key not found");
+            System.out.println("Sorry " + e.getMessage());
         }
     }
 

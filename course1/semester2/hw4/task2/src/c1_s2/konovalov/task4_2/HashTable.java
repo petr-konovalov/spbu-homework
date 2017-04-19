@@ -30,7 +30,7 @@ public class HashTable {
             table[hashFunction.getHash(key, table.length)].push(new StringPair(key, value));
             ++elementCount;
         } catch (UniqueList.ReAddValueException e) {
-            throw new ReAddKeyException();
+            throw new ReAddKeyException(key);
         }
     }
 
@@ -46,7 +46,7 @@ public class HashTable {
         try {
             element = table[hashFunction.getHash(key, table.length)].getElement(element);
         } catch (UniqueList.ElementNotFoundException e) {
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(key);
         }
 
         return element.SecondString;
@@ -62,7 +62,7 @@ public class HashTable {
             table[hashFunction.getHash(key, table.length)].remove(new StringPair(key, ""));
             --elementCount;
         } catch (UniqueList.ElementNotFoundException e) {
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(key);
         }
     }
 
@@ -123,7 +123,7 @@ public class HashTable {
         }
     }
 
-    /** статистика тиблицы */
+    /** статистика таблицы */
     public class Statistic {
         /** размер таблицы*/
         int tableSize;
@@ -153,10 +153,14 @@ public class HashTable {
     }
 
     public class ReAddKeyException extends Exception {
-
+        ReAddKeyException(String key) {
+            super("key " + key + " already added");
+        }
     }
 
     public class KeyNotFoundException extends Exception {
-
+        KeyNotFoundException(String key) {
+            super("key " + key + " not found");
+        }
     }
 }
