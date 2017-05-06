@@ -1,19 +1,8 @@
 package c1_s2.konovalov.task4_1;
 
 /** список неповторяющихся элементов */
-public class UniqueList<T extends Comparable<T>> {
-    private Node head = null;
-    private Node current = null;
-
-    private class Node {
-        private T value;
-        private Node next;
-
-        Node(T initialValue, Node initialNext) {
-            value = initialValue;
-            next = initialNext;
-        }
-    }
+public class UniqueList<T> {
+    private LinkedList<T> elements = new LinkedList<>();
 
     /**
      * возвращает следущий элемент в списке
@@ -21,18 +10,11 @@ public class UniqueList<T extends Comparable<T>> {
      * @throws ListIsEmptyException бросается в случае если список пуст
      */
     public T getNext() throws ListIsEmptyException {
-        if (isEmpty())
+        try {
+            return elements.getNext();
+        } catch(LinkedList.ListIsEmptyException e) {
             throw new ListIsEmptyException();
-
-        if (current == null)
-            current = head;
-        else
-            current = current.next;
-
-        if (current == null)
-            return null;
-
-        return current.value;
+        }
     }
 
     /**
@@ -40,15 +22,7 @@ public class UniqueList<T extends Comparable<T>> {
      * @return возвращает количество элементов в списке
      */
     public int size() {
-        Node runningElement = head;
-        int elementCount = 0;
-
-        while (runningElement != null) {
-            runningElement = runningElement.next;
-            ++elementCount;
-        }
-
-        return elementCount;
+        return elements.size();
     }
 
     /**
@@ -59,12 +33,26 @@ public class UniqueList<T extends Comparable<T>> {
      * больше чем количество элементов в списке
      */
     public T retrieve(int position) throws ListOutOfBoundException {
-        Node element = getElement(position);
-
-        if (element == null)
+        try {
+            return elements.retrieve(position);
+        } catch (List.ListOutOfBoundException e) {
             throw new ListOutOfBoundException();
+        }
+    }
 
-        return element.value;
+    /**
+     * возвращает позицию элемента в списке
+     * @param element значение элемента
+     * @return возвращает позицию
+     * @throws ElementNotFoundException бросается в случае если элемент не был найден
+     */
+    public int locate(T element) throws ElementNotFoundException {
+        int position = searchElement(element);
+
+        if (position == -1)
+            throw new ElementNotFoundException();
+
+        return position;
     }
 
     /**
@@ -76,91 +64,70 @@ public class UniqueList<T extends Comparable<T>> {
      * @throws ReAddValueException бросается если добавляемый элемент уже присутствует в списке
      */
     public void insert(int position, T element) throws ListOutOfBoundException, ReAddValueException {
-        if (!isEmpty() && (head.value.compareTo(element) == 0 || getPreviousElement(element).next != null))
-            throw new ReAddValueException();
+        if (searchElement(element) != -1)
+            throw new ReAddValueException("the value " + element + " already added");
 
-        if (position == 0)
-            head = new Node(element, head);
-        else {
-            Node previousElement = getElement(position - 1);
-
-            if (previousElement == null)
-                throw new ListOutOfBoundException();
-
-            previousElement.next = new Node(element, previousElement.next);
+        try {
+            elements.insert(position, element);
+        } catch (List.ListOutOfBoundException e) {
+            throw new ListOutOfBoundException();
         }
     }
 
     /**
      * удаляет элемент стоящий на заданной позиции в списке
      * @param position позиция удаляемого элемента
-     * @throws ListIsEmptyException бросается в случае если список пуст
      * @throws ListOutOfBoundException бросается в случае если позция элемента
      * больше чем количество элементов в списке
      */
-    public void removeFromPosition(int position) throws ListIsEmptyException, ListOutOfBoundException {
-        if (isEmpty())
-            throw new ListIsEmptyException();
-
-        if (position == 0)
-            head = head.next;
-        else {
-            Node previousElement = getElement(position - 1);
-
-            if (previousElement == null || previousElement.next == null)
-                throw new ListOutOfBoundException();
-
-            previousElement.next = previousElement.next.next;
+    public void removeFromPosition(int position) throws ListOutOfBoundException {
+        try {
+            elements.remove(position);
+        } catch (List.ListOutOfBoundException e) {
+            throw new ListOutOfBoundException();
         }
     }
 
     /**
      * удаляет элемент из списка с заданным значением
      * @param element значение удаляемого элемента
-     * @throws ListIsEmptyException бросается в случае если список пуст
      * @throws ElementNotFoundException бросается в случае если в списке нет элемента с заданным значением
      */
-    public void remove(T element) throws ListIsEmptyException, ElementNotFoundException {
-        if (isEmpty())
-            throw new ListIsEmptyException();
+    public void remove(T element) throws ElementNotFoundException {
+        int position = searchElement(element);
 
-        if (head.value.compareTo(element) == 0)
-            head = head.next;
-        else {
-            Node previousElement = getPreviousElement(element);
+        if (position == -1)
+            throw new ElementNotFoundException();
 
-            if (previousElement.next == null)
-                throw new ElementNotFoundException();
+        try {
+            elements.remove(position);
+        } catch (List.ListOutOfBoundException e) {
 
-            previousElement.next = previousElement.next.next;
         }
     }
 
-    private boolean isEmpty() {
-        return head == null;
-    }
+    private int searchElement(T element) {
+        int position = 0;
+        boolean isSearch = false;
 
-    private Node getElement(int position) {
-        Node element = head;
+        try {
+            T runningElement = elements.getNext();
 
-        while (position > 0 && element != null) {
-            element = element.next;
-            --position;
+            while (runningElement != null) {
+                if (element.equals(runningElement))
+                    isSearch = true;
+                if (!isSearch)
+                    ++position;
+                runningElement = elements.getNext();
+            }
+        } catch(List.ListIsEmptyException e) {
+            isSearch = false;
         }
 
-        return element;
+        return isSearch ? position : -1;
     }
 
-    private Node getPreviousElement(T element) {
-        Node previousNode = head;
-
-        while (previousNode.next != null && previousNode.next.value.compareTo(element) != 0)
-            previousNode = previousNode.next;
-
-        return previousNode;
-    }
-
-    /** бросается при попытке получить следущий элемент или удалить элемент из пустого списка */
+    /** бросается при попытке получить следущий элемент из пустого списка */
     public static class ListIsEmptyException extends Exception {
 
     }
@@ -172,10 +139,12 @@ public class UniqueList<T extends Comparable<T>> {
 
     /** бросается при попытке добавить существующий элемент в список */
     public static class ReAddValueException extends Exception {
-
+        ReAddValueException(String message) {
+            super(message);
+        }
     }
 
-    /** бросается при попытке удалить несуществующий элемент из списка */
+    /** бросается при попытке найти несуществующий элемент в списке */
     public static class ElementNotFoundException extends Exception {
 
     }

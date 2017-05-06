@@ -8,18 +8,12 @@ import static junit.framework.TestCase.fail;
 public class UniqueListTester {
     final private int elementCount = 1024;
     private UniqueList<Integer> numbers;
+    private Integer elements[] = new Integer[elementCount];
 
     @Before
     public void initializeNumbers() {
         numbers = new UniqueList<>();
         initializeList(elementCount, numbers);
-    }
-
-    @Test(expected = UniqueList.ListIsEmptyException.class)
-    public void testListIsEmptyException()
-            throws UniqueList.ListIsEmptyException, UniqueList.ListOutOfBoundException {
-        for (int i = 0; i <= elementCount; ++i)
-            numbers.removeFromPosition(0);
     }
 
     @Test(expected = UniqueList.ReAddValueException.class)
@@ -44,20 +38,12 @@ public class UniqueListTester {
     @Test
     public void testMethodGetNext () {
         try {
-            boolean[] numberSet = new boolean[elementCount];
-            Integer number = -1;
-
-            for (int i = 0; i < elementCount; ++i)
-                numberSet[i] = false;
-            while (number != null) {
-                number = numbers.getNext();
-                if (number != null) {
-                    if (numberSet[number])
-                        fail();
-                    numberSet[number] = true;
-                }
+            Integer nextElement = numbers.getNext();
+            for (int i = 0; i < elementCount; ++i) {
+                if (!nextElement.equals(elements[i]))
+                    fail();
+                nextElement = numbers.getNext();
             }
-            checkNumberSet(numberSet);
         } catch (Exception e) {
             fail();
         }
@@ -66,40 +52,35 @@ public class UniqueListTester {
     @Test
     public void testMethodRetrieve() {
         try {
-            boolean[] numberSet = new boolean[elementCount];
-            Integer[] positions = new Integer[elementCount];
-
             for (int i = 0; i < elementCount; ++i) {
-                numberSet[i] = false;
-                positions[i] = i;
+                if (!numbers.retrieve(i).equals(elements[i]))
+                    fail();
             }
-            mixArray(positions);
-            for (int i = 0; i < elementCount; ++i)
-                numberSet[numbers.retrieve(positions[i])] = true;
-
-            checkNumberSet(numberSet);
         } catch (Exception e) {
             fail();
         }
     }
 
-    private void checkNumberSet (boolean[] numberSet) {
-        for (boolean item: numberSet)
-            if (!item)
-                fail();
+    @Test
+    public void testMethodLocate() {
+        try {
+            for (int i = 0; i < elementCount; ++i)
+                if (numbers.locate(elements[i]) != i)
+                    fail();
+        } catch(Exception e) {
+            fail();
+        }
     }
 
     private void initializeList(int elementCount, UniqueList<Integer> numbers) {
-        Integer[] array = new Integer[elementCount];
-
         try {
             for (int i = 0; i < elementCount; ++i)
-                array[i] = i;
+                elements[i] = i;
 
-            mixArray(array);
+            mixArray(elements);
 
             for (int i = 0; i < elementCount; ++i)
-                numbers.insert(i, array[i]);
+                numbers.insert(i, elements[i]);
         } catch (Exception e) {
             fail();
         }
