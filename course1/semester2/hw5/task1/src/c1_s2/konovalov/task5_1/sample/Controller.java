@@ -68,7 +68,7 @@ public class Controller {
     }
 
     private void printResult() {
-        final int maxLength = 12;
+        final int maxLength = 14;
         String result = String.valueOf(calculate());
         resultDisplay.setText(result.substring(0, min(result.length(), maxLength)));
     }
