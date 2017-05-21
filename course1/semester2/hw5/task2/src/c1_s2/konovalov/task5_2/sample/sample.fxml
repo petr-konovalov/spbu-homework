@@ -133,7 +133,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Button>
-      <TextArea fx:id="resultDisplay" editable="false" maxHeight="-Infinity" minHeight="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="42.0" prefWidth="275.0" text="0" GridPane.valignment="BOTTOM">
+      <TextArea fx:id="resultDisplay" editable="false" maxHeight="-Infinity" minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="42.0" prefWidth="275.0" text="0" GridPane.valignment="BOTTOM">
          <font>
             <Font name="System Bold" size="18.0" />
          </font></TextArea>

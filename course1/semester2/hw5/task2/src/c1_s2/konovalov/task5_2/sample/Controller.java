@@ -13,7 +13,7 @@ public class Controller {
 
     private double result = 0;
     private long value = 0;
-    private int operation = -1;
+    private int operation = 0;
 
     public void buttonOneAction(ActionEvent event) {
         addValueDigit(1);
@@ -61,10 +61,8 @@ public class Controller {
     }
 
     public void buttonZeroAction(ActionEvent event) {
-        if (value != 0) {
-            addValueDigit(0);
-            printValue(value);
-        }
+        addValueDigit(0);
+        printValue(value);
     }
 
     public void buttonPlusAction(ActionEvent event) {
@@ -94,7 +92,7 @@ public class Controller {
     public void buttonEqualsAction(ActionEvent event) {
         expressionDisplay.setText("");
         printResult();
-        operation = -1;
+        operation = 0;
     }
 
     private void printResult() {
