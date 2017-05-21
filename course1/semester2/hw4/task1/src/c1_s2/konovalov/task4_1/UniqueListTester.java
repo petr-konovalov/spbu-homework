@@ -7,7 +7,7 @@ import static junit.framework.TestCase.fail;
 
 public class UniqueListTester {
     final private int elementCount = 1024;
-    private UniqueList<Integer> numbers;
+    private List<Integer> numbers;
     private Integer elements[] = new Integer[elementCount];
 
     @Before
@@ -21,12 +21,6 @@ public class UniqueListTester {
         Random generator = new Random();
 
         numbers.insert(generator.nextInt(elementCount), generator.nextInt(elementCount));
-    }
-
-    @Test(expected = UniqueList.ElementNotFoundException.class)
-    public void testElementNotFoundException ()
-            throws UniqueList.ListIsEmptyException, UniqueList.ElementNotFoundException {
-        numbers.remove(elementCount);
     }
 
     @Test
@@ -61,18 +55,7 @@ public class UniqueListTester {
         }
     }
 
-    @Test
-    public void testMethodLocate() {
-        try {
-            for (int i = 0; i < elementCount; ++i)
-                if (numbers.locate(elements[i]) != i)
-                    fail();
-        } catch(Exception e) {
-            fail();
-        }
-    }
-
-    private void initializeList(int elementCount, UniqueList<Integer> numbers) {
+    private void initializeList(int elementCount, List<Integer> numbers) {
         try {
             for (int i = 0; i < elementCount; ++i)
                 elements[i] = i;
