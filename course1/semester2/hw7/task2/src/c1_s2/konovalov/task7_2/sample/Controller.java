@@ -6,6 +6,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
+import c1_s2.konovalov.task7_2.sample.CrossZero.GameStatus;
+import static c1_s2.konovalov.task7_2.sample.CrossZero.GameStatus.*;
+
 
 public class Controller {
     private CrossZero crossZero = new CrossZero();
@@ -25,8 +28,8 @@ public class Controller {
                     currentButton.getId().charAt(7) - '0') ? "X" : "O");
             filledButtons[filledButtonsCount++] = currentButton;
 
-            int gameStatus = crossZero.getGameStatus();
-            if (gameStatus != 0) {
+            GameStatus gameStatus = crossZero.getGameStatus();
+            if (gameStatus != GameIsNotOver) {
                 gameOver = true;
                 printVictoryTitle(gameStatus);
                 victoryTitle.setVisible(true);
@@ -35,15 +38,15 @@ public class Controller {
         }
     }
 
-    private void printVictoryTitle(int victoryType) {
+    private void printVictoryTitle(GameStatus victoryType) {
         switch (victoryType) {
-            case 1:
+            case WonCrosses:
                 victoryTitle.setText("Победил X");
                 break;
-            case 2:
+            case WonZeros:
                 victoryTitle.setText("Победил O");
                 break;
-            case 3:
+            case NobodyWon:
                 victoryTitle.setText("Ничья");
                 break;
         }

@@ -2,7 +2,7 @@ package c1_s2.konovalov.task7_2.sample;
 
 import static java.lang.StrictMath.abs;
 
-/** игра крестики нолики*/
+/** игра крестики нолики */
 class CrossZero {
     private int[][] field = new int[3][3];
     private boolean isCross = true;
@@ -28,9 +28,10 @@ class CrossZero {
 
     /**
      * возвращает статус игры
-     * @return 0 - игра не закончена, 1 - победили кресты, 2 - победили нолики, 3 - ничья
+     * @return GameIsNotOver - игра не закончена, WonCrosses - победили кресты,
+     * WosZeros - победили нолики, NobodyWon - ничья
      */
-    int getGameStatus() {
+    GameStatus getGameStatus() {
         int[] result = new int[8];
         int filledCellCount = 0;
 
@@ -46,9 +47,13 @@ class CrossZero {
 
         for (int i = 0; i < 8; ++i)
             if (abs(result[i]) == 3)
-                return result[i] > 0 ? 1 : 2;
+                return result[i] > 0 ? GameStatus.WonCrosses : GameStatus.WonZeros;
 
-        return filledCellCount < 9 ? 0 : 3;
+        return filledCellCount < 9 ? GameStatus.GameIsNotOver : GameStatus.NobodyWon;
+    }
+
+    enum GameStatus {
+        GameIsNotOver, WonCrosses, WonZeros, NobodyWon
     }
 
     class ImpossibleMakeMovement extends RuntimeException {
